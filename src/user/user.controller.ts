@@ -7,8 +7,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UserController {
   constructor(private readonly UserService: UserService) {}
 
-  @Post('post')
+  @Post('signup')
   create(@Body() createUserDto: CreateUserDto) {
+    
     return this.UserService.addUser(createUserDto);
   }
 
@@ -28,7 +29,7 @@ export class UserController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async delete(@Param('id') id: string) {
     return this.UserService.remove(id);
   }
 }
