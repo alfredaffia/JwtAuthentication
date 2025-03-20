@@ -4,11 +4,13 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
   constructor(@InjectRepository(User)
   private createUserDto: Repository<User>,
+    private jwtService: JwtService,
   ) { }
   async addUser(createUserDto: CreateUserDto) {
     const { email } = createUserDto;
@@ -16,8 +18,12 @@ export class UserService {
     if (existingUser) {
       throw new HttpException('User already exists', 400);
     }
+    const payload = { email: 'user.email', sub: 'user.id', username: 'user.username' };
     const add = this.createUserDto.create(createUserDto);
-    return this.createUserDto.save(add);
+    return {
+      user: await this.createUserDto.save(add),
+      access_token: this.jwtService.sign(payload)
+    };
   }
 
 
@@ -35,7 +41,7 @@ export class UserService {
 
 
   async findByEmail(email: string) {
-    const findEmail= await this.createUserDto.findOne({ where: { email: email } });
+    const findEmail = await this.createUserDto.findOne({ where: { email: email } });
     return findEmail
   }
 

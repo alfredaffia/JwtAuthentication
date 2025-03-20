@@ -8,7 +8,7 @@ import * as bcrypt from 'bcrypt';
 export class AuthService {
     constructor(private userService: UserService,
          private jwtService: JwtService,
-         
+    
     ) { }
 
     async validateUser(
@@ -35,7 +35,6 @@ async login(login: CreateUserDto){
     return {
         userDetails:user,
         access_token: this.jwtService.sign(payload)
-
     }
 }
 
