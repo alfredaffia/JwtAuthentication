@@ -44,6 +44,11 @@ export class UserService {
     const findEmail = await this.createUserDto.findOne({ where: { email: email } });
     return findEmail
   }
+  // async findByPassword(password: string) {
+  //   const findPassword = await this.createUserDto.findOne({ where: { password: password } });
+  //   return findPassword
+  // }
+
 
   async update(id, updateUserDto: UpdateUserDto) {
     const update = await this.createUserDto.findOne({ where: { id: id } });

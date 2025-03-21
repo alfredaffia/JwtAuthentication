@@ -22,18 +22,25 @@ export class AuthService {
         return null
     }
 async login(login: CreateUserDto){
-    const{email, password} =login
+    const{password,email} =login
+    if(!login){
+       throw new HttpException(' no account found',404)
+    }
     const user = await this.userService.findByEmail(email)
     if(!user){
         throw new HttpException('input valid email',404)
     }
+  
+  
+  
     const isMatch = await bcrypt.compare(password, user.password)
     if(!isMatch){
         throw new HttpException('invalid password',404)
     }
     const payload = { email: 'user.email', sub: 'user.id', username: 'user.username' };
     return {
-        userDetails:user,
+     userId: user.id,
+     email: user.email,
         access_token: this.jwtService.sign(payload)
     }
 }
