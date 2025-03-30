@@ -14,4 +14,7 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
         @IsNotEmpty()
         @IsString()
         password: string;
+
+        // @IsNotEmpty()
+        // IsBlocked:boolean;
 }

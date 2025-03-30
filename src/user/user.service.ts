@@ -48,22 +48,35 @@ export class UserService {
   //   const findPassword = await this.createUserDto.findOne({ where: { password: password } });
   //   return findPassword
   // }
-
-
-  async update(id, updateUserDto: UpdateUserDto) {
-    const update = await this.createUserDto.findOne({ where: { id: id } });
-    if (!update) {
-      throw new HttpException('User not found', 400);
+  async blockUser(UserId: string, isBlocked: boolean){
+    const user = await this.createUserDto.findOne({ where: { id: UserId }});
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
-    const newUpdate = await this.createUserDto.update(id, updateUserDto);
-    const updated = await this.createUserDto.findOne({ where: { id } });
-    return {
-      statusCode: 200,
-      message: 'User updated successfully',
-      data: updated
-    }
+       
+    user.isBlocked = isBlocked;
+    return this.createUserDto.save(user);
   }
-  async remove(id: string): Promise<{ message: string }> {
+
+  
+  async update(id, updatedata: Partial<User>) {
+    const updateuser = await this.createUserDto.findOne({ where: { id } });
+
+    if (!updateuser) {
+      throw new NotFoundException(`user with ID ${id} not found`);
+    }
+
+    // const newupdate = await this.createUserDto.update(id,updateuser);
+    // const updated = await this.createUserDto.findOne({ where: { id } })
+    
+const update =await this.createUserDto.update(id, updateuser)
+    return{
+      statuscode:200,
+      message:'user succesfully updated',
+       data:update
+    }
+}
+   async remove(id: string): Promise<{ message: string }> {
     const result = await this.createUserDto.delete(id);
 
     if (result.affected === 0) {
@@ -72,8 +85,6 @@ export class UserService {
     }
 
     const newresult = await this.createUserDto.delete(id)
-
-
     return {
       message: `Library record with ID ${id} deleted successfully`,
 

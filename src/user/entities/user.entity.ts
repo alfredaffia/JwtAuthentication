@@ -20,5 +20,7 @@ export class User extends Base {
     }
   
 
+    @Column({default: false}) 
+    isBlocked: boolean;
 
 }
