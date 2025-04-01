@@ -32,9 +32,9 @@ async login(login: CreateUserDto){
     if(!user){
         throw new HttpException('input valid email',404)
     }
-    // Check if user is blocked
+     // Check if user is blocked
     if (user.isBlocked) {
-        throw new UnauthorizedException('User is blocked');
+        throw new UnauthorizedException('User is blocked'); 
       }
       // Check if password is correct
     const isMatch = await bcrypt.compare(password, user.password)

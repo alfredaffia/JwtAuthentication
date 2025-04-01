@@ -14,12 +14,17 @@ export class UserService {
   ) { }
   async addUser(createUserDto: CreateUserDto) {
     const { email } = createUserDto;
+
     const existingUser = await this.createUserDto.findOne({ where: { email } });
+
     if (existingUser) {
       throw new HttpException('User already exists', 400);
     }
+
     const payload = { email: 'user.email', sub: 'user.id', username: 'user.username' };
+
     const add = this.createUserDto.create(createUserDto);
+
     return {
       user: await this.createUserDto.save(add),
       access_token: this.jwtService.sign(payload)
@@ -33,32 +38,35 @@ export class UserService {
 
   async findOne(id: string) {
     const find = await this.createUserDto.findOne({ where: { id: id } });
+
     if (!find) {
-      throw new HttpException('User not found', 400);
-    }
+      throw new HttpException('User not found', 400)
+    };
+
     return find;
   }
 
 
   async findByEmail(email: string) {
     const findEmail = await this.createUserDto.findOne({ where: { email: email } });
+
     return findEmail
   }
   // async findByPassword(password: string) {
   //   const findPassword = await this.createUserDto.findOne({ where: { password: password } });
   //   return findPassword
   // }
-  async blockUser(UserId: string, isBlocked: boolean){
-    const user = await this.createUserDto.findOne({ where: { id: UserId }});
+  async blockUser(UserId: string, isBlocked: boolean) {
+    const user = await this.createUserDto.findOne({ where: { id: UserId } });
     if (!user) {
       throw new NotFoundException('User not found');
-    }
-       
+    };
+
     user.isBlocked = isBlocked;
     return this.createUserDto.save(user);
   }
 
-  
+
   async update(id, updatedata: Partial<User>) {
     const updateuser = await this.createUserDto.findOne({ where: { id } });
 
@@ -68,15 +76,15 @@ export class UserService {
 
     // const newupdate = await this.createUserDto.update(id,updateuser);
     // const updated = await this.createUserDto.findOne({ where: { id } })
-    
-const update =await this.createUserDto.update(id, updateuser)
-    return{
-      statuscode:200,
-      message:'user succesfully updated',
-       data:update
+
+    const update = await this.createUserDto.update(id, updateuser)
+    return {
+      statuscode: 200,
+      message: 'user succesfully updated',
+      data: update
     }
-}
-   async remove(id: string): Promise<{ message: string }> {
+  }
+  async remove(id: string): Promise<{ message: string }> {
     const result = await this.createUserDto.delete(id);
 
     if (result.affected === 0) {
